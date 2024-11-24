@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt";
 import { db } from "@vercel/postgres";
-import { invoices, customers, revenue, users } from "../lib/placeholder-data";
+import {
+  invoices,
+  customers,
+  revenue,
+  users,
+} from "../lib/placeholder-data.1ts";
 
 const client = await db.connect();
 
@@ -44,7 +49,12 @@ async function seedInvoices() {
 
   const insertedInvoices = await Promise.all(
     invoices.map(
-      (invoice) => client.sql`
+      (invoice: {
+        customer_id: string | number | boolean | null | undefined;
+        amount: string | number | boolean | null | undefined;
+        status: string | number | boolean | null | undefined;
+        date: string | number | boolean | null | undefined;
+      }) => client.sql`
         INSERT INTO invoices (customer_id, amount, status, date)
         VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
         ON CONFLICT (id) DO NOTHING;
@@ -69,7 +79,12 @@ async function seedCustomers() {
 
   const insertedCustomers = await Promise.all(
     customers.map(
-      (customer) => client.sql`
+      (customer: {
+        id: string | number | boolean | null | undefined;
+        name: string | number | boolean | null | undefined;
+        email: string | number | boolean | null | undefined;
+        image_url: string | number | boolean | null | undefined;
+      }) => client.sql`
         INSERT INTO customers (id, name, email, image_url)
         VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
         ON CONFLICT (id) DO NOTHING;
@@ -90,7 +105,10 @@ async function seedRevenue() {
 
   const insertedRevenue = await Promise.all(
     revenue.map(
-      (rev) => client.sql`
+      (rev: {
+        month: string | number | boolean | null | undefined;
+        revenue: string | number | boolean | null | undefined;
+      }) => client.sql`
         INSERT INTO revenue (month, revenue)
         VALUES (${rev.month}, ${rev.revenue})
         ON CONFLICT (month) DO NOTHING;
